@@ -1,0 +1,23 @@
+
+Blockplace functionality
+
+SMART CONTRACT
+
+CORE MVP
+--------------------------------------------------------------
+1000x1000 canvas
+can be zoomed
+View nft pixel data and information on tap (mint sidebar)
+Mint a pixel with a specified color hex code
+Change pixel color if you own the nft (pay for gas fee)
+View on opensea fast link?
+
+NICE TO HAVE
+--------------------------------------------------------------
+drag and select bulk of pixels to mint (check if a minted pixel by someone is selected -> cant mint if current user isn't the owner of the nft)
+generate all metadata images for a blockplace pixel
+blockplace whitepaper
+create roadmap for blockplace
+add 'fun' use cases section
+blockplace loader
+blockplace branding

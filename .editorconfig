@@ -1,0 +1,15 @@
+[*.json]
+indent_size=2
+indent_style=tab
+
+[*.js]
+indent_size=2
+indent_style=tab
+
+[*.css]
+indent_size=2
+indent_style=tab
+
+[*.sol]
+indent_size=2
+indent_style=tab
