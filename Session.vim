@@ -10,8 +10,27 @@ endif
 set shortmess=aoO
 argglobal
 %argdel
-edit ~/kquirapas/web3/blockplace/hardhat/test/Place.test.js
+edit hardhat/test/Place.test.js
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
 argglobal
+balt hardhat/test/Greylist.test.js
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -22,21 +41,50 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 44)
+let s:l = 1 - ((0 * winheight(0) + 22) / 45)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
+wincmd w
+argglobal
+if bufexists("hardhat/contracts/Place.sol") | buffer hardhat/contracts/Place.sol | else | edit hardhat/contracts/Place.sol | endif
+if &buftype ==# 'terminal'
+  silent file hardhat/contracts/Place.sol
+endif
+balt hardhat/test/Greylist.test.js
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 45 - ((36 * winheight(0) + 22) / 45)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 45
+normal! 0
+wincmd w
+exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
 tabnext 1
-badd +1 app/pages/index.js
-badd +3 ~/kquirapas/web3/blockplace/hardhat/test/sample-test.js
-badd +1 ~/kquirapas/web3/blockplace/hardhat/test/Place.test.js
+badd +21 hardhat/contracts/Greylist.sol
+badd +49 hardhat/contracts/Place.sol
+badd +36 hardhat/test/Greylist.test.js
+badd +1 hardhat/test/Place.test.js
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20 shortmess=filnxtToOF
+let &winminheight = s:save_winminheight
+let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)

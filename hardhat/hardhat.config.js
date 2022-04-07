@@ -14,9 +14,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 
-
 const	DEV_URL = process.env.DEV_ALCHEMY_URL_APIKEY;
 const	DEV_PRIVATEKEY = process.env.DEV_PRIVATEKEY;
+
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -30,7 +30,9 @@ module.exports = {
 	networks: {
 		mumbai: {
 			url: DEV_URL,
-			accounts: [`0x${DEV_PRIVATEKEY}`]
+			accounts: [
+				`0x${DEV_PRIVATEKEY}`
+			]
 		},
 	},
 	etherscan: {
