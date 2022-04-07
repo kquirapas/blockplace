@@ -14,3 +14,55 @@ a {
 * {
   box-sizing: border-box;
 }
+
+
+@font-face {
+	font-family: 'Press Start';
+	src: url("/fonts/Press_Start_2P/PressStart2P-Regular.ttf") format('truetype');
+}
+
+.page-header {
+	font-family: Press Start;
+	font-size: 100px;
+}
+
+.section-header {
+	font-family: Press Start;
+	font-size: 26px;
+}
+
+.body-text {
+	line-height: 140%;
+	font-family: Press Start;
+	font-size: 12px;
+}
+
+.secondary-text {
+	font-family: Press Start;
+	font-size: 8px;
+}
+
+.nav-main-link {
+	font-family: Press Start;
+	font-size: 14px;
+}
+
+.nav-sub-link {
+	font-family: Press Start;
+	font-size: 14px;
+}
+
+.footer-header {
+	font-family: Press Start;
+	font-size: 14px;
+}
+
+.footer-link {
+	font-family: Press Start;
+	font-size: 14px;
+}
+
+.nav-logo {
+	font-family: Press Start;
+	font-size: 22px;
+}
