@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import './App.css';
 
@@ -8,26 +8,56 @@ function randInt(max) {
 	return Math.floor(Math.random() * max);
 }
 
-const pixelData = [];
-for (let row = 0; row < DIMENSION; row++) {
-	for (let col = 0; col < DIMENSION; col++) {
-		pixelData[row * DIMENSION + col] = {};
-		pixelData[row * DIMENSION + col].r = randInt(255);
-		pixelData[row * DIMENSION + col].g = randInt(255);
-		pixelData[row * DIMENSION + col].b = randInt(255);
+
+function createRandomPixel2DArray(w, h) {
+	const pixelData = [];
+	for (let row = 0; row < h; row++) {
+		let currRow = [];
+		for (let col = 0; col < w; col++) {
+			currRow.push({});
+			currRow[col].r = randInt(255);
+			currRow[col].g = randInt(255);
+			currRow[col].b = randInt(255);
+			currRow[col].a = 255;
+		}
+		pixelData.push(currRow);
 	}
+	return pixelData;
 }
 
-console.log(pixelData);
+function createImageData(ctx, pixel2DArray,  w, h) {
+
+	const data = ctx.createImageData(w, h);
+	for (let i = 0; i < data.data.length; i += 4) {
+		let x = (i / 4) % w;
+		let y = Math.floor(i / (4 * w));
+		data.data[i] = pixel2DArray[y][x].r;
+		data.data[i+1] = pixel2DArray[y][x].g;
+		data.data[i+2] = pixel2DArray[y][x].b;
+		data.data[i+3] = pixel2DArray[y][x].a;
+	}
+
+	return data;
+}
 
 function App() {
-	const dataUrl = useRef(null);
 	const sC = document.createElement('canvas');
 	sC.width = DIMENSION;
 	sC.height = DIMENSION;
 	const sourceCtx = useRef(sC.getContext('2d'));
 	const canvasRef = useRef(null);
 	const mainCtx = useRef(null);
+	const [pixels, setPixels] = useState(createRandomPixel2DArray(DIMENSION, DIMENSION));
+
+	const regenerate = () => {
+		console.log('regenerating');
+		setPixels(createRandomPixel2DArray(DIMENSION, DIMENSION));
+	};
+
+	useEffect(() => {
+		console.log('pixels changing');
+		mainCtx.current.putImageData(createImageData(sourceCtx.current, pixels, DIMENSION, DIMENSION), 0, 0);
+	}, [pixels]);
 
 	useEffect(() => {
 		document.body.style.backgroundColor = "grey";
@@ -36,21 +66,10 @@ function App() {
 		canvasRef.current.height = DIMENSION;
 		mainCtx.current = canvasRef.current.getContext('2d');
 
-		console.log(sourceCtx, mainCtx)
-
-		const imgData = sourceCtx.current.createImageData(DIMENSION, DIMENSION);
-		for (let i = 0; i < imgData.data.length; i += 4) {
-			let x = (i / 4) % DIMENSION;
-			let y = Math.floor(i / (4 * DIMENSION));
-			imgData.data[i] = pixelData[y * DIMENSION + x].r;
-			imgData.data[i+1] = pixelData[y * DIMENSION + x].g;
-			imgData.data[i+2] = pixelData[y * DIMENSION + x].b;
-			imgData.data[i+3] = 255;
-		}
-		console.log('imgData', imgData);
-
 		mainCtx.current.imageSmoothingEnabled = false;
-		mainCtx.current.putImageData(imgData, 0, 0);
+		mainCtx.current.putImageData(createImageData(sourceCtx.current, pixels, DIMENSION, DIMENSION), 0, 0);
+
+		setInterval(()=>{regenerate()}, 5000);
 	}, []);
 
   return (
