@@ -26,11 +26,4 @@ describe('Greylist Contract', () => {
 		await greylist.addToGreylist();
 		expect(await greylist.isGreylisted()).to.equal(true);
 	})
-
-	it('should get duration in seconds', async () => {
-		const tx = await greylist.addToGreylist();
-		await tx.wait();
-		await delay(1000);
-		expect(parseInt((await greylist.getGreylistDuration()).toString())).to.equal(1);
-	});
 });

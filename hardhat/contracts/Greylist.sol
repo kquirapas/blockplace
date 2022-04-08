@@ -7,7 +7,7 @@ contract Greylist {
 
 	function addToGreylist() public {
 		// greylist address for 2 seconds
-		greylistedAddresses[msg.sender] = block.timestamp + 2 seconds;
+		greylistedAddresses[msg.sender] = block.timestamp + 20 seconds;
 	}
 
 	function isGreylisted() public view returns (bool) {

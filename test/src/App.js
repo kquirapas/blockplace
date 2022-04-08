@@ -40,6 +40,8 @@ function createImageData(ctx, pixel2DArray,  w, h) {
 	return data;
 }
 
+const PIXELS = createRandomPixel2DArray(DIMENSION, DIMENSION);
+
 function App() {
 	const sC = document.createElement('canvas');
 	sC.width = DIMENSION;
@@ -47,11 +49,11 @@ function App() {
 	const sourceCtx = useRef(sC.getContext('2d'));
 	const canvasRef = useRef(null);
 	const mainCtx = useRef(null);
-	const [pixels, setPixels] = useState(createRandomPixel2DArray(DIMENSION, DIMENSION));
+	const [pixels, setPixels] = useState([]);
 
 	const regenerate = () => {
 		console.log('regenerating');
-		setPixels(createRandomPixel2DArray(DIMENSION, DIMENSION));
+		setPixels(PIXELS);
 	};
 
 	useEffect(() => {
@@ -69,11 +71,11 @@ function App() {
 		mainCtx.current.imageSmoothingEnabled = false;
 		mainCtx.current.putImageData(createImageData(sourceCtx.current, pixels, DIMENSION, DIMENSION), 0, 0);
 
-		setInterval(()=>{regenerate()}, 5000);
+		// setInterval(()=>{regenerate()}, 5000);
 	}, []);
 
   return (
-		<canvas ref={canvasRef}></canvas>
+		<canvas onMouseMove={regenerate} ref={canvasRef}></canvas>
   );
 }
 

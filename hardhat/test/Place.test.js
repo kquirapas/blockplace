@@ -94,8 +94,12 @@ describe('Place Contract', () => {
 		});
 
 		it('should NOT mint because tokenId owned', async () => {
-			await expect(place2.mintPixel(0, {value: ethers.utils.parseEther("1.0")})).to.not.be.reverted;
+			const tx = await expect(place2.mintPixel(0, {value: ethers.utils.parseEther("1.0")})).to.not.be.reverted;
+			await tx.wait();
+
+			// delay to dodge greylist
 			await delay(3000);
+
 			await expect(place2.mintPixel(0, {value: ethers.utils.parseEther("1.0")})).to.be.revertedWith('Token already minted');
 		});
 	});

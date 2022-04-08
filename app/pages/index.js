@@ -12,6 +12,15 @@ import { BLACK, WHITE, RED, GREEN, ORANGE, YELLOW, BLUE, PINK, GREY } from '../s
 
 // Home
 export default function Home() {
+	const [scrollAnchor, setScrollAnchor] = useState({x: 50, y: 50});
+	const [scrollZoom, setScrollZoom] = useState(1);
+
+	const zoom = (event) => {
+		const zoomGrain = 0.002;
+		setScrollZoom(prevScrollZoom => {
+			return prevScrollZoom + (-event.deltaY) * zoomGrain;
+		});
+	}
 
 	useEffect(() => {
 		// on mount
@@ -24,8 +33,14 @@ export default function Home() {
 			<main id="placeholder">
 				<Place />
 			</main>
-			<NavBar />
 			<style jsx global>{`
+				main {
+					max-width: 50vw;
+					background-color: ${GREY.hex};
+					transform-origin: ${scrollAnchor.x}% ${setScrollAnchor.y}%;
+					transform: scale(${scrollZoom});
+				}
+					
 				body {
 					width: 100vw;
 					background-color: ${BLACK.hex};
@@ -33,7 +48,9 @@ export default function Home() {
 
 				#placeholder {
 					display: flex;
+					flex-direction: column;
 					justify-content: center;
+					align-content: center;
 				}
 			`}</style>
 		</div>

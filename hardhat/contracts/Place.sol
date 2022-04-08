@@ -14,7 +14,7 @@ contract Place is ERC721Enumerable, Ownable, Greylist {
 
 	string baseTokenURI;
 
-	uint256 public price = 1 ether;
+	uint256 public price = 0.001 ether;
 	bool public paused;
 
 	uint256 public tokenIdsLeft;
