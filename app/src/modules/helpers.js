@@ -19,6 +19,7 @@ export function createRandomPixel2DArray(w, h) {
 	return pixelData;
 }
 
+
 export function createImageData(pixel2DArray,  w, h) {
 	const canvas = document.createElement('canvas');
 	canvas.width = w;
@@ -37,3 +38,42 @@ export function createImageData(pixel2DArray,  w, h) {
 
 	return data;
 }
+
+export function createFilledImageData(color, w, h) {
+	const canvas = document.createElement('canvas');
+	canvas.width = w;
+	canvas.height = h;
+	const ctx = canvas.getContext('2d');
+
+	const data = ctx.createImageData(w, h);
+	for (let i = 0; i < data.data.length; i += 4) {
+		data.data[i] = color.r;
+		data.data[i+1] = color.g;
+		data.data[i+2] = color.b;
+		data.data[i+3] = color.a;
+	}
+
+	return data;
+} 
+
+export function createDotOnImageData(imgData, color, x, y, w, h) {
+	if (x < 0 || x >= w || y < 0 || y >= h) {
+		throw new Error('Coordinate out of bounds');
+	}
+
+	const data = new ImageData(imgData.data, w, h);
+
+	// copy matrix
+	// const data = [];
+	// for (let i = 0; i < height; i++) {
+	// 	data[i] = imgData[i].slice();
+	// }
+  //
+	const i = (y * w + x) * 4;
+	data.data[i] = color.r;
+	data.data[i + 1] = color.g;
+	data.data[i + 2] = color.b;
+	data.data[i + 3] = color.a;
+
+	return imgData;
+} 

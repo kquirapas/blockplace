@@ -35,7 +35,10 @@ export default function Home() {
 			</main>
 			<style jsx global>{`
 				main {
-					max-width: 50vw;
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					max-width: 100vw;
 					background-color: ${GREY.hex};
 					transform-origin: ${scrollAnchor.x}% ${setScrollAnchor.y}%;
 					transform: scale(${scrollZoom});
