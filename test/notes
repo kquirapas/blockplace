@@ -1,0 +1,9 @@
+requestAnimationFrames()
+dom-to-image
+Web workers
+.toDataURL
+.putImageData
+base64 image
+https://reddit.fun/99699/displaying-raw-pixel-array-on-a-web-page-using-image-tag
+createImageData and putImageData()
+
