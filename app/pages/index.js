@@ -30,6 +30,7 @@ export default function Home() {
 
   return (
 		<div>
+			<NavBar />
 			<main id="placeholder">
 				<Place />
 			</main>
@@ -39,7 +40,7 @@ export default function Home() {
 					flex-direction: row;
 					align-items: center;
 					max-width: 100vw;
-					background-color: ${GREY.hex};
+					background-color: ${BLACK.hex};
 					transform-origin: ${scrollAnchor.x}% ${setScrollAnchor.y}%;
 					transform: scale(${scrollZoom});
 				}

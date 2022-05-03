@@ -10,6 +10,9 @@ import { PLACE } from '../constants';
 const DIMENSION = 100;
 const PIXELS = createRandomPixel2DArray(DIMENSION, DIMENSION);
 
+// for sidebar
+const SPLIT_THICKNESS = 1;
+
 class Color {
 	constructor(r, g, b, a) {
 		this.r = r;
@@ -19,11 +22,18 @@ class Color {
 	}
 }
 
+const tokenIdToColRow = (id, width) => {
+	const x = id % width;
+	const y = Math.floor(id / width);
+	return { x, y };
+};
+
+
 // Place 
 export default function Place() {
 	const canvasRef = useRef(null);
 	const contextRef = useRef(null);
-	const [pixels, setPixels] = useState(PIXELS);
+	const [pixels, setPixels] = useState(null);
 
 	const [loading, setLoading] = useState(true);
 	const [showInfo, setShowInfo] = useState(false);
@@ -77,15 +87,7 @@ export default function Place() {
 		setShowInfo(true);
 	};
 
-	// const regenerate = (event) => {
-	// 	console.log('regenerating');
-	// 	// setPixels(PIXELS);
-	// 	contextRef.current.putImageData(createImageData(pixels, DIMENSION, DIMENSION), 0, 0);
-	// };
-
-
-	// BLOCKCHAIN FUNCTIONS
-	
+	// BLOCKCHAIN FUNCTIONS const connectWallet = async () => { try { console.log('Trying to connect');
 	const connectWallet = async () => { try {
 			console.log('Trying to connect');
 			await getProviderOrSigner();
@@ -97,7 +99,7 @@ export default function Place() {
 
 
 	const getMintStatus = async (tokenId) => {
-		const provider = await getProviderOrSigner(true);
+		const provider = await getProviderOrSigner(false);
 		const placeInstance = new Contract(PLACE, PlaceContract.abi, provider);
 
 		return await placeInstance.minted(tokenId);
@@ -122,14 +124,19 @@ export default function Place() {
 	}
 
 	const getAllTokens = async () => {
+		// get all tokens and sync into board
 		const provider = await getProviderOrSigner();
 		const placeInstance = new Contract(PLACE, PlaceContract.abi, provider);
 
 		const supply = await placeInstance.totalSupply();
-		console.log('supply', supply.toNumber());
+		console.log('Supply:', supply.toNumber());
+		const tokens = []
 		for (let i = 0; i < supply; i++) {
-			console.log(await placeInstance.tokenByIndex(i));
+			let token = await placeInstance.tokenByIndex(i)
+			console.log(token);
+			tokens.push(token)
 		}
+		return tokens
 	};
 
 	const mint = async (tokenId) => {
@@ -144,6 +151,42 @@ export default function Place() {
 			console.log(err);
 		}
 	};
+
+	const imageDataFromTokens = async (tokens, width, height, neutralFill) => {
+		const provider = await getProviderOrSigner(false);
+		const placeInstance = new Contract(PLACE, PlaceContract.abi, provider);
+
+		const tokenIds = tokens.map((t) => {
+			return t.toNumber()
+		});
+
+		const canvas = document.createElement('canvas');
+		canvas.width = width;
+		canvas.height = height;
+
+		const ctx = canvas.getContext('2d');
+		const imgData = ctx.createImageData(width, height);
+		console.log('length', imgData.data.length);
+		for (let i = 0; i < imgData.data.length; i += 4) {
+			// checks if curr index in tokenIds
+			// to render the color of that token
+			// when it is indeed in the tokenids
+			if (tokenIds.includes(Math.floor(i / 4))) {
+				const tokenColor = await placeInstance.color(i);
+				imgData.data[i] = tokenColor.r;
+				imgData.data[i+1] = tokenColor.g;
+				imgData.data[i+2] = tokenColor.b;
+				imgData.data[i+3] = 255; // opaque (max alpha)
+			} else {
+				imgData.data[i] = neutralFill.r;
+				imgData.data[i+1] = neutralFill.g;
+				imgData.data[i+2] = neutralFill.b;
+				imgData.data[i+3] = neutralFill.a;
+			}
+		}
+
+		return imgData;
+	}
 
 	// USE EFFECT
 
@@ -165,7 +208,15 @@ export default function Place() {
 		// get context from main canvas
 		contextRef.current = canvasRef.current.getContext('2d');
 
-		// setInterval(regenerate, 5000);
+		// initial board sync with tokens
+		// IIFE
+		(async () => {
+			const white = new Color(255,255,255,255);
+			const data = await imageDataFromTokens(await getAllTokens(), DIMENSION, DIMENSION, white);
+			console.log('data', data);
+			setPixels(data);
+		})();
+		// setInterval();
 
 		return () => {
 			// on dismount
@@ -200,16 +251,16 @@ export default function Place() {
 	}
 
 	useEffect(() => {
-		console.log('changed');
-		const data = createFilledImageData(new Color(0,0,0,255), DIMENSION, DIMENSION);
-		const dottedData = createDotOnImageData(data, new Color(255, 0, 0, 255), 15, 15, DIMENSION, DIMENSION);
-		contextRef.current.putImageData(dottedData, 0, 0);
+		if (pixels) {
+			console.log('changed');
+			console.log(pixels)
+			contextRef.current.putImageData(pixels, 0, 0);
+		}
 	}, [pixels]);
 
 	return (
 		<>
 			<button type='button' onClick={connectWallet}>Connect Wallet</button>
-			<button type='button' onClick={getAllTokens}>Get All Tokens</button>
 			<canvas onMouseMove={track} onClick={showMint} width={DIMENSION} height={DIMENSION} ref={canvasRef}></canvas>
 			{ showInfo && returnInfoBox(infoLoading) }
 
@@ -221,11 +272,40 @@ export default function Place() {
 				}
 
 				#info-box {
-					padding: 1vw;
+					font-family: Press Start;
+					color: ${WHITE.hex};
+					padding: 10vh 2vw;
 					position: fixed;
 					top: 0px;
 					left: 0px;
-					background-color: rgba(0,0,0,0.3);
+					height: 100%;
+
+					animation-name: rainbow-border-right;
+					animation-duration: 2s;
+					animation-direction: normal;
+					animation-fill-mode: forwards;
+					animation-iteration-count: infinite;
+				}
+
+				@keyframes rainbow-border-right {
+					0% {
+						border-right: ${SPLIT_THICKNESS}px solid ${RED.hex};
+					}
+					20% {
+						border-right: ${SPLIT_THICKNESS}px solid ${ORANGE.hex};
+					}
+					40% {
+						border-right: ${SPLIT_THICKNESS}px solid ${YELLOW.hex};
+					}
+					60% {
+						border-right: ${SPLIT_THICKNESS}px solid ${GREEN.hex};
+					}
+					80% {
+						border-right: ${SPLIT_THICKNESS}px solid ${BLUE.hex};
+					}
+					100% {
+						border-right: ${SPLIT_THICKNESS}px solid ${RED.hex};
+					}
 				}
 			`}</style>
 		</>

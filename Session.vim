@@ -7,10 +7,24 @@ cd ~/kquirapas/web3/blockplace
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
+let s:shortmess_save = &shortmess
 set shortmess=aoO
+badd +2 app/pages/index.js
+badd +11 test/src/index.js
+badd +42 app/src/modules/helpers.js
+badd +38 app/src/components/Place.js
+badd +71 hardhat/contracts/Place.sol
+badd +9 hardhat/contracts/Greylist.sol
+badd +7 hardhat/package.json
+badd +65 test/src/App.js
+badd +1 app/src/modules/colors.js
+badd +49 app/src/components/NavBar.js
+badd +2 test/src/index.css
+badd +1144 app/node_modules/@ethersproject/contracts/src.ts/index.ts
+badd +2 ~/kquirapas/web3/freshman/nft/src/index.js
 argglobal
 %argdel
-edit app/pages/index.js
+edit app/src/components/Place.js
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -27,10 +41,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 58 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 131 + 95) / 190)
+exe 'vert 1resize ' . ((&columns * 94 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 95 + 95) / 190)
 argglobal
-balt test/src/index.js
+balt app/src/modules/helpers.js
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -41,19 +55,19 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 53 - ((33 * winheight(0) + 22) / 44)
+let s:l = 38 - ((21 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 53
-normal! 0
+keepjumps 38
+normal! 044|
 wincmd w
 argglobal
-if bufexists("app/src/modules/helpers.js") | buffer app/src/modules/helpers.js | else | edit app/src/modules/helpers.js | endif
+if bufexists(fnamemodify("app/src/modules/helpers.js", ":p")) | buffer app/src/modules/helpers.js | else | edit app/src/modules/helpers.js | endif
 if &buftype ==# 'terminal'
   silent file app/src/modules/helpers.js
 endif
-balt app/src/components/Place.js
+balt hardhat/contracts/Place.sol
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -64,31 +78,23 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 81 - ((43 * winheight(0) + 22) / 44)
+let s:l = 42 - ((21 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 81
+keepjumps 42
 normal! 0
 wincmd w
 2wincmd w
-exe 'vert 1resize ' . ((&columns * 58 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 131 + 95) / 190)
+exe 'vert 1resize ' . ((&columns * 94 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 95 + 95) / 190)
 tabnext 1
-badd +26 app/pages/index.js
-badd +197 app/src/components/Place.js
-badd +67 hardhat/contracts/Place.sol
-badd +9 hardhat/contracts/Greylist.sol
-badd +7 hardhat/package.json
-badd +56 test/src/App.js
-badd +4 test/src/index.js
-badd +81 app/src/modules/helpers.js
-badd +1 app/src/modules/colors.js
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
 unlet! s:wipebuf
-set winheight=1 winwidth=20 shortmess=filnxtToOF
+set winheight=1 winwidth=20
+let &shortmess = s:shortmess_save
 let &winminheight = s:save_winminheight
 let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"

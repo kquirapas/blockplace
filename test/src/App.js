@@ -62,7 +62,7 @@ function App() {
 	}, [pixels]);
 
 	useEffect(() => {
-		document.body.style.backgroundColor = "grey";
+		document.body.style.backgroundColor = "";
 
 		canvasRef.current.width = DIMENSION;
 		canvasRef.current.height = DIMENSION;

@@ -16,8 +16,6 @@ export default function NavBar() {
 
 			<style jsx>{`
 				nav {
-					position: fixed;
-					top: 0;
 					animation-name: rainbow-border-bottom;
 					animation-duration: 2s;
 					animation-direction: normal;

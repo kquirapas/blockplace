@@ -54,7 +54,7 @@ contract Place is ERC721Enumerable, Ownable, Greylist {
 
 		tokenIdsLeft -= 1;
 		minted[tokenId] = true;
-		color[tokenId] = Color({r: 255, g: 255, b: 255});
+		color[tokenId] = Color({r: 0, g: 0, b: 0});
 		addToGreylist();
 		_safeMint(msg.sender, tokenId);
 	}
