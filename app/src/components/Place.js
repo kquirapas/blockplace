@@ -7,11 +7,13 @@ import { createImageData, createDotOnImageData, createFilledImageData, createRan
 import PlaceContract from '../artifacts/contracts/Place.sol/Place.json';
 import { PLACE } from '../constants';
 
-const DIMENSION = 100;
-const PIXELS = createRandomPixel2DArray(DIMENSION, DIMENSION);
+const DIMENSION = 1000;
 
 // for sidebar
 const SPLIT_THICKNESS = 1;
+
+// random pixel data
+// createImageData(createRandomPixel2DArray(DIMENSION, DIMENSION), DIMENSION, DIMENSION)
 
 class Color {
 	constructor(r, g, b, a) {
@@ -42,6 +44,11 @@ export default function Place() {
 
 	const web3modalRef = useRef(null);
 	const [walletConnected, setWalletConnected] = useState(false);
+
+	// color input refs
+	const redRef = useRef(null);
+	const greenRef = useRef(null);
+	const blueRef = useRef(null);
 
 
 	// HELPER FUNCTIONS
@@ -152,6 +159,19 @@ export default function Place() {
 		}
 	};
 
+	const setPixelColor = async (tokenId, color) => {
+		console.log('color', color);
+		const signer = await getProviderOrSigner(true);
+		const placeInstance = new Contract(PLACE, PlaceContract.abi, signer);
+
+		try {
+			await placeInstance.setColor(tokenId, [color.r, color.g, color.b])
+			console.log(`Color change (${color.r}, ${color.g}, ${color.b}: ${tokenId}`);
+		} catch (err) {
+			console.error("In setPixelColor:", err);
+		}
+	}
+
 	const imageDataFromTokens = async (tokens, width, height, neutralFill) => {
 		const provider = await getProviderOrSigner(false);
 		const placeInstance = new Contract(PLACE, PlaceContract.abi, provider);
@@ -210,13 +230,19 @@ export default function Place() {
 
 		// initial board sync with tokens
 		// IIFE
-		(async () => {
-			const white = new Color(255,255,255,255);
-			const data = await imageDataFromTokens(await getAllTokens(), DIMENSION, DIMENSION, white);
-			console.log('data', data);
-			setPixels(data);
-		})();
-		// setInterval();
+		setInterval(() => {
+			// syncing board
+			console.log("[ SYNCING ]");
+			(async () => {
+				const white = new Color(255,255,255,255);
+				const data = await imageDataFromTokens(await getAllTokens(), DIMENSION, DIMENSION, white);
+				console.log('data', data);
+				setPixels(data);
+
+			// setPixels(createImageData(createRandomPixel2DArray(DIMENSION, DIMENSION), DIMENSION, DIMENSION));
+			})();
+		}, 5000) // every 1 second
+
 
 		return () => {
 			// on dismount
@@ -244,7 +270,28 @@ export default function Place() {
 				<p>{`Column: ${info.col}`}</p>
 				<p>{`Minted?: ${info.minted ? 'Yes' : 'Not Yet'}`}</p>
 				{!info.minted &&
-					<button type="button" onClick={()=>{mint(info.tokenId)}}>Mint</button>
+					<button className="info-box-button" type="button" onClick={()=>{mint(info.tokenId)}}>Mint</button>
+				}
+				{ info.minted &&
+					<div>
+						<p>Red</p>
+						<input className="info-box-input" ref={redRef} type="text" />
+						<p>Green</p>
+						<input className="info-box-input" ref={greenRef} type="text" />
+						<p>Blue</p>
+						<input className="info-box-input" ref={blueRef} type="text" />
+						<br />
+						<br />
+						<button className="info-box-button" type="button" onClick={async () => {
+							const r = parseInt(redRef.current.value, 10);
+							const g = parseInt(greenRef.current.value, 10);
+							const b = parseInt(blueRef.current.value, 10);
+							console.log('refs', redRef, greenRef, blueRef);
+							console.log('rgb.value', redRef.value, greenRef.value, blueRef.value);
+							console.log('rgb', r, g, b);
+							await setPixelColor(info.tokenId, new Color(r, g, b, 255));
+						}}>Set Color</button>
+					</div>
 				}
 			</div>
 		);
@@ -285,6 +332,21 @@ export default function Place() {
 					animation-direction: normal;
 					animation-fill-mode: forwards;
 					animation-iteration-count: infinite;
+				}
+
+				.info-box-input, .info-box-button {
+					box-sizing: border-box;
+					text-align: center;
+					padding: 5px;
+					font-family: Press Start;
+					font-size: 12px;
+					color: ${WHITE.hex};
+					background-color: ${BLACK.hex};
+					border: 1px solid ${WHITE.hex};
+				}
+
+				.info-box-button:hover {
+					border: 2px solid ${WHITE.hex};
 				}
 
 				@keyframes rainbow-border-right {

@@ -19,7 +19,6 @@ export function createRandomPixel2DArray(w, h) {
 	return pixelData;
 }
 
-
 export function createImageData(pixel2DArray,  w, h) {
 	const canvas = document.createElement('canvas');
 	canvas.width = w;

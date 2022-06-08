@@ -11,17 +11,18 @@ let s:shortmess_save = &shortmess
 set shortmess=aoO
 badd +2 app/pages/index.js
 badd +11 test/src/index.js
-badd +42 app/src/modules/helpers.js
-badd +38 app/src/components/Place.js
-badd +71 hardhat/contracts/Place.sol
+badd +32 app/src/modules/helpers.js
+badd +83 app/src/components/Place.js
+badd +1 hardhat/contracts/Place.sol
 badd +9 hardhat/contracts/Greylist.sol
 badd +7 hardhat/package.json
 badd +65 test/src/App.js
 badd +1 app/src/modules/colors.js
-badd +49 app/src/components/NavBar.js
+badd +58 app/src/components/NavBar.js
 badd +2 test/src/index.css
 badd +1144 app/node_modules/@ethersproject/contracts/src.ts/index.ts
 badd +2 ~/kquirapas/web3/freshman/nft/src/index.js
+badd +21 app/styles/globals.css
 argglobal
 %argdel
 edit app/src/components/Place.js
@@ -44,29 +45,6 @@ set winwidth=1
 exe 'vert 1resize ' . ((&columns * 94 + 95) / 190)
 exe 'vert 2resize ' . ((&columns * 95 + 95) / 190)
 argglobal
-balt app/src/modules/helpers.js
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 38 - ((21 * winheight(0) + 22) / 44)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 38
-normal! 044|
-wincmd w
-argglobal
-if bufexists(fnamemodify("app/src/modules/helpers.js", ":p")) | buffer app/src/modules/helpers.js | else | edit app/src/modules/helpers.js | endif
-if &buftype ==# 'terminal'
-  silent file app/src/modules/helpers.js
-endif
 balt hardhat/contracts/Place.sol
 setlocal fdm=manual
 setlocal fde=0
@@ -78,11 +56,34 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 42 - ((21 * winheight(0) + 22) / 44)
+let s:l = 83 - ((21 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 42
+keepjumps 83
+normal! 029|
+wincmd w
+argglobal
+if bufexists(fnamemodify("hardhat/contracts/Place.sol", ":p")) | buffer hardhat/contracts/Place.sol | else | edit hardhat/contracts/Place.sol | endif
+if &buftype ==# 'terminal'
+  silent file hardhat/contracts/Place.sol
+endif
+balt app/src/components/Place.js
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 1 - ((0 * winheight(0) + 22) / 44)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 1
 normal! 0
 wincmd w
 2wincmd w
